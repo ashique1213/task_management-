@@ -91,7 +91,5 @@ app.log
 *.swo
 
 
-adminpanel
-# authentication
 tasks
 templates
