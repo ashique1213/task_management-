@@ -1,0 +1,97 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.so
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+
+# Django stuff
+*.log
+log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Environment
+.env
+*.env
+.env.*
+!env.example
+
+# Virtualenv
+venv/
+ENV/
+env/
+.venv/
+
+# VSCode / PyCharm
+.vscode/
+.idea/
+*.iml
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Migrations (optional, if you don’t want to track)
+# **/migrations/*.py
+# !**/migrations/__init__.py
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+*.pidfile
+docker-compose.override.yml
+
+# Redis / Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Coverage / Testing
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+*.hypothesis/
+.pytest_cache/
+
+# MyPy / Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# Logs
+logs/
+*.log
+app.log
+
+# JetBrains
+.idea/
+
+# Backup
+*.bak
+*.swp
+*.swo
+
+
+adminpanel
+authentication
+tasks
+templates
