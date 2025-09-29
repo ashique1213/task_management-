@@ -1,0 +1,13 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ user.username }} ({{ user.role }})</h1>
+{% if user.role == 'superadmin' %}
+<a href="{% url 'user_list' %}">Manage Users and Admins</a><br>
+{% endif %}
+<a href="{% url 'task_list' %}">Manage Tasks</a><br>
+<a href="{% url 'create_task' %}">Create Task</a><br>
+<a href="{% url 'admin_logout' %}">Logout</a>
+{% endblock %}
