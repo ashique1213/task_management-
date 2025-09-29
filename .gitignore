@@ -92,6 +92,6 @@ app.log
 
 
 adminpanel
-authentication
+# authentication
 tasks
 templates

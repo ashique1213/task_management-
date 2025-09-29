@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -90,6 +90,9 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'task_management.wsgi.application'
+
+
+AUTH_USER_MODEL = "authentication.User"
 
 
 # Database
