@@ -151,3 +151,74 @@ class CreateTaskView(LoginRequiredMixin, View):
         logger.info(f"Task {task.title} created and assigned to {assigned_to.username} by {request.user.username}")
         return redirect('task_list')
 
+class UpdateTaskView(LoginRequiredMixin, View):
+    login_url = '/adminpanel/login/'
+    def get(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        user = request.user
+        if user.role == 'superadmin':
+            pass
+        elif user.role == 'admin':
+            if task.assigned_to.assigned_to != user:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseForbidden()
+        return render(request, 'adminpanel/update_task.html', {'task': task})
+
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        user = request.user
+        if user.role == 'superadmin':
+            pass
+        elif user.role == 'admin':
+            if task.assigned_to.assigned_to != user:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseForbidden()
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        due_date = request.POST.get('due_date')
+        status = request.POST.get('status')
+        previous_status = task.status
+        error = None
+        if status == 'Completed':
+            completion_report = request.POST.get('completion_report')
+            worked_hours = request.POST.get('worked_hours')
+            if previous_status != 'Completed':
+                if not completion_report or not worked_hours:
+                    error = "Completion report and worked hours are required when marking as completed"
+            if error:
+                return render(request, 'adminpanel/update_task.html', {'task': task, 'error': error})
+            if completion_report:
+                task.completion_report = completion_report
+            if worked_hours:
+                try:
+                    task.worked_hours = float(worked_hours)
+                except ValueError:
+                    error = "Worked hours must be a number"
+                    return render(request, 'adminpanel/update_task.html', {'task': task, 'error': error})
+        task.title = title
+        task.description = description
+        task.due_date = due_date
+        task.status = status
+        task.save()
+        logger.info(f"Task {task.title} updated by {request.user.username}")
+        return redirect('task_list')
+
+class DeleteTaskView(LoginRequiredMixin, View):
+    login_url = '/adminpanel/login/'
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        user = request.user
+        if user.role == 'superadmin':
+            pass
+        elif user.role == 'admin':
+            if task.assigned_to.assigned_to != user:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseForbidden()
+        title = task.title
+        task.delete()
+        logger.info(f"Task {title} deleted by {request.user.username}")
+        return redirect('task_list')
+
