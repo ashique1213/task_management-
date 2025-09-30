@@ -6,11 +6,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from authentication.models import User
 from tasks.models import Task
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+
 
 logger = logging.getLogger(__name__)
 
 class LoginView(View):
     def get(self, request):
+        if request.user.is_authenticated and request.user.role in ['admin', 'superadmin']:
+            return redirect('admin_dashboard')
         return render(request, 'adminpanel/login.html')
 
     def post(self, request):
@@ -30,10 +35,6 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('admin_login')
-
-
-from django.views.decorators.cache import never_cache
-from django.utils.decorators import method_decorator
 
 @method_decorator(never_cache, name='dispatch')
 class DashboardView(LoginRequiredMixin, View):
