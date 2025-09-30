@@ -4,4 +4,5 @@ from tasks.views import TaskListView,TaskUpdateView,TaskReportView
 urlpatterns = [
     path('tasks/', TaskListView.as_view(), name='task_list'),
     path('tasks/<int:pk>/', TaskUpdateView.as_view(), name='task_update'),
+    path('tasks/<int:pk>/report/', TaskReportView.as_view(), name='task_report_api'),
 ]

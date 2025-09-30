@@ -44,3 +44,24 @@ class TaskUpdateView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=http_status.HTTP_400_BAD_REQUEST)
 
+class TaskReportView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        if task.status != 'Completed':
+            return Response({"error": "Task is not completed"}, status=http_status.HTTP_400_BAD_REQUEST)
+        user = request.user
+        if user.role == 'superadmin':
+            pass
+        elif user.role == 'admin':
+            if task.assigned_to.assigned_to != user:
+                return Response({"error": "Not authorized to view this report"}, status=http_status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"error": "Not authorized"}, status=http_status.HTTP_403_FORBIDDEN)
+        data = {
+            'completion_report': task.completion_report,
+            'worked_hours': task.worked_hours
+        }
+        logger.info(f"Task {task.id} report viewed by {request.user.username}")
+        return Response(data)
