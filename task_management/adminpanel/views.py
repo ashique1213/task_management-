@@ -80,3 +80,16 @@ class DeleteUserView(LoginRequiredMixin, View):
         logger.info(f"User {username} deleted by {request.user.username}")
         return redirect('user_list')
 
+class UpdateRoleView(LoginRequiredMixin, View):
+    login_url = '/adminpanel/login/'
+    def post(self, request, pk):
+        if request.user.role != 'superadmin':
+            return redirect('admin_dashboard')
+        user = get_object_or_404(User, pk=pk)
+        new_role = request.POST.get('new_role')
+        if new_role in ['user', 'admin', 'superadmin']:
+            old_role = user.role
+            user.role = new_role
+            user.save()
+            logger.info(f"User {user.username} role updated from {old_role} to {new_role} by {request.user.username}")
+        return redirect('user_list')
