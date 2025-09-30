@@ -1,0 +1,19 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Create User{% endblock %}
+
+{% block content %}
+<h1>Create User</h1>
+<form method="post">
+    {% csrf_token %}
+    Username: <input type="text" name="username"><br>
+    Password: <input type="password" name="password"><br>
+    Email: <input type="email" name="email"><br>
+    Role: <select name="role">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+    </select><br>
+    <button type="submit">Create</button>
+</form>
+<a href="{% url 'user_list' %}">Back</a>
+{% endblock %}

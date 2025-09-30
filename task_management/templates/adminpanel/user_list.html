@@ -1,0 +1,47 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}User List{% endblock %}
+
+{% block content %}
+<h1>User List</h1>
+<a href="{% url 'create_user' %}">Create New User</a>
+<table border="1">
+    <tr><th>Username</th><th>Role</th><th>Assigned To</th><th>Actions</th></tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.assigned_to.username|default:"None" }}</td>
+        <td>
+            <form method="post" action="{% url 'delete_user' user.id %}">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+            <form method="post" action="{% url 'update_role' user.id %}">
+                {% csrf_token %}
+                <select name="new_role">
+                    <option {% if user.role == 'user' %}selected{% endif %} value="user">User</option>
+                    <option {% if user.role == 'admin' %}selected{% endif %} value="admin">Admin</option>
+                    <option {% if user.role == 'superadmin' %}selected{% endif %} value="superadmin">SuperAdmin</option>
+                </select>
+                <button type="submit">Update Role</button>
+            </form>
+            {% if user.role == 'user' %}
+            <form method="post" action="{% url 'assign_user' %}">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <select name="admin_id">
+                    <option value="">None</option>
+                    {% for admin in admins %}
+                    <option value="{{ admin.id }}" {% if user.assigned_to.id == admin.id %}selected{% endif %}>{{ admin.username }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Assign to Admin</button>
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'admin_dashboard' %}">Back to Dashboard</a>
+{% endblock %}
