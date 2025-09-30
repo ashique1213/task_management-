@@ -93,3 +93,18 @@ class UpdateRoleView(LoginRequiredMixin, View):
             user.save()
             logger.info(f"User {user.username} role updated from {old_role} to {new_role} by {request.user.username}")
         return redirect('user_list')
+
+class AssignUserToAdminView(LoginRequiredMixin, View):
+    login_url = '/adminpanel/login/'
+    def post(self, request):
+        if request.user.role != 'superadmin':
+            return redirect('admin_dashboard')
+        user_id = request.POST.get('user_id')
+        admin_id = request.POST.get('admin_id')
+        user = get_object_or_404(User, id=user_id, role='user')
+        admin = get_object_or_404(User, id=admin_id, role='admin')
+        user.assigned_to = admin
+        user.save()
+        logger.info(f"User {user.username} assigned to {admin.username} by {request.user.username}")
+        return redirect('user_list')
+
