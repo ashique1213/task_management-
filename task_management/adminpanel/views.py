@@ -108,3 +108,46 @@ class AssignUserToAdminView(LoginRequiredMixin, View):
         logger.info(f"User {user.username} assigned to {admin.username} by {request.user.username}")
         return redirect('user_list')
 
+class TaskListView(LoginRequiredMixin, View):
+    login_url = '/adminpanel/login/'
+    def get(self, request):
+        if request.user.role not in ['admin', 'superadmin']:
+            return redirect('admin_dashboard')
+        if request.user.role == 'superadmin':
+            tasks = Task.objects.all()
+        else:
+            users = request.user.assigned_users.all()
+            tasks = Task.objects.filter(assigned_to__in=users)
+        return render(request, 'adminpanel/task_list.html', {'tasks': tasks})
+
+class CreateTaskView(LoginRequiredMixin, View):
+    login_url = '/adminpanel/login/'
+    def get(self, request):
+        if request.user.role not in ['admin', 'superadmin']:
+            return redirect('admin_dashboard')
+        if request.user.role == 'superadmin':
+            users = User.objects.filter(role='user')
+        else:
+            users = request.user.assigned_users.all()
+        return render(request, 'adminpanel/create_task.html', {'users': users})
+
+    def post(self, request):
+        if request.user.role not in ['admin', 'superadmin']:
+            return redirect('admin_dashboard')
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        assigned_to_id = request.POST.get('assigned_to')
+        due_date = request.POST.get('due_date')
+        if request.user.role == 'superadmin':
+            assigned_to = get_object_or_404(User, id=assigned_to_id, role='user')
+        else:
+            assigned_to = get_object_or_404(User, id=assigned_to_id, assigned_to=request.user, role='user')
+        task = Task.objects.create(
+            title=title,
+            description=description,
+            assigned_to=assigned_to,
+            due_date=due_date,
+        )
+        logger.info(f"Task {task.title} created and assigned to {assigned_to.username} by {request.user.username}")
+        return redirect('task_list')
+
