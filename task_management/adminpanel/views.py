@@ -31,6 +31,11 @@ class LogoutView(View):
         logout(request)
         return redirect('admin_login')
 
+
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+
+@method_decorator(never_cache, name='dispatch')
 class DashboardView(LoginRequiredMixin, View):
     login_url = '/adminpanel/login/'
     def get(self, request):
