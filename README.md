@@ -1,13 +1,5 @@
 # Task Management Application with Task Completion Report
 
-We are enhancing the Task Management Application by allowing users to submit a short report and their worked hours when they complete a task. This will help track what was done on each task and how much time it took.
-
-- When users mark a task as completed, they must also submit a Completion Report and Worked Hours.
-- These reports will be visible to Admins and SuperAdmins for review and monitoring.
-- This feature makes task tracking more transparent and improves accountability.
-
-Develop API endpoints and an Admin Panel utilizing Python and Django to enhance task management functionality.
-
 ## 1. API Endpoints (Create endpoints only, no need to integrate)
 ### User Authentication
 - **JWT Authentication**: Implement JSON Web Token (JWT) authentication for the User API to ensure secure access.
@@ -63,7 +55,8 @@ Develop API endpoints and an Admin Panel utilizing Python and Django to enhance 
    - Install required packages: `pip install -r requirements.txt`.
 
 3. **Configure the Project**:
-   - Update `taskmanagement/settings.py` with 
+   - Update `taskmanagement/settings.py`:
+    
      SECRET_KEY = config("SECRET_KEY")
      DEBUG = config("DEBUG", default=False, cast=bool)
      ALLOWED_HOSTS = config("ALLOWED_HOSTS")
