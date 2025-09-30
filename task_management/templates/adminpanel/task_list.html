@@ -1,0 +1,30 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Task List{% endblock %}
+
+{% block content %}
+<h1>Task List</h1>
+<a href="{% url 'create_task' %}">Create New Task</a>
+<table border="1">
+    <tr><th>Title</th><th>Assigned To</th><th>Due Date</th><th>Status</th><th>Actions</th></tr>
+    {% for task in tasks %}
+    <tr>
+        <td>{{ task.title }}</td>
+        <td>{{ task.assigned_to.username }}</td>
+        <td>{{ task.due_date }}</td>
+        <td>{{ task.status }}</td>
+        <td>
+            <a href="{% url 'update_task' task.id %}">Edit</a>
+            <form method="post" action="{% url 'delete_task' task.id %}">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+            {% if task.status == 'Completed' %}
+            <a href="{% url 'task_report' task.id %}">View Report</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'admin_dashboard' %}">Back to Dashboard</a>
+{% endblock %}

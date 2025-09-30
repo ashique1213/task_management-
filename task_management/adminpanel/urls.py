@@ -16,5 +16,4 @@ urlpatterns = [
     path('assign_user/', AssignUserToAdminView.as_view(), name='assign_user'),
     path('tasks/', TaskListView.as_view(), name='task_list'),
     path('tasks/create/', CreateTaskView.as_view(), name='create_task'),
-   
 ]
