@@ -1,0 +1,11 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block title %}Task Report{% endblock %}
+
+{% block content %}
+<h1>Task Report: {{ task.title }}</h1>
+<p>Assigned To: {{ task.assigned_to.username }}</p>
+<p>Completion Report: {{ task.completion_report }}</p>
+<p>Worked Hours: {{ task.worked_hours }}</p>
+<a href="{% url 'task_list' %}">Back</a>
+{% endblock %}

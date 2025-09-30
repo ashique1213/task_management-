@@ -222,3 +222,19 @@ class DeleteTaskView(LoginRequiredMixin, View):
         logger.info(f"Task {title} deleted by {request.user.username}")
         return redirect('task_list')
 
+class TaskReportAdminView(LoginRequiredMixin, View):
+    login_url = '/adminpanel/login/'
+    def get(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        if task.status != 'Completed':
+            return HttpResponseForbidden('Task is not completed')
+        user = request.user
+        if user.role == 'superadmin':
+            pass
+        elif user.role == 'admin':
+            if task.assigned_to.assigned_to != user:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseForbidden()
+        logger.info(f"Task {task.id} report viewed in panel by {request.user.username}")
+        return render(request, 'adminpanel/task_report.html', {'task': task})
