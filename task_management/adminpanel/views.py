@@ -38,14 +38,15 @@ class LogoutView(View):
 
 @method_decorator(never_cache, name='dispatch')
 class DashboardView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def get(self, request):
         if request.user.role not in ['admin', 'superadmin']:
             return redirect('admin_login')
         return render(request, 'adminpanel/dashboard.html')
 
+@method_decorator(never_cache, name='dispatch')
 class UserListView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def get(self, request):
         if request.user.role != 'superadmin':
             return redirect('admin_dashboard')
@@ -54,7 +55,7 @@ class UserListView(LoginRequiredMixin, View):
         return render(request, 'adminpanel/user_list.html', {'users': users, 'admins': admins})
 
 class CreateUserView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def get(self, request):
         if request.user.role != 'superadmin':
             return redirect('admin_dashboard')
@@ -74,7 +75,7 @@ class CreateUserView(LoginRequiredMixin, View):
         return redirect('user_list')
 
 class DeleteUserView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def post(self, request, pk):
         if request.user.role != 'superadmin':
             return redirect('admin_dashboard')
@@ -87,7 +88,7 @@ class DeleteUserView(LoginRequiredMixin, View):
         return redirect('user_list')
 
 class UpdateRoleView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def post(self, request, pk):
         if request.user.role != 'superadmin':
             return redirect('admin_dashboard')
@@ -101,7 +102,7 @@ class UpdateRoleView(LoginRequiredMixin, View):
         return redirect('user_list')
 
 class AssignUserToAdminView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def post(self, request):
         if request.user.role != 'superadmin':
             return redirect('admin_dashboard')
@@ -114,8 +115,9 @@ class AssignUserToAdminView(LoginRequiredMixin, View):
         logger.info(f"User {user.username} assigned to {admin.username} by {request.user.username}")
         return redirect('user_list')
 
+@method_decorator(never_cache, name='dispatch')
 class TaskListView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def get(self, request):
         if request.user.role not in ['admin', 'superadmin']:
             return redirect('admin_dashboard')
@@ -127,7 +129,7 @@ class TaskListView(LoginRequiredMixin, View):
         return render(request, 'adminpanel/task_list.html', {'tasks': tasks})
 
 class CreateTaskView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def get(self, request):
         if request.user.role not in ['admin', 'superadmin']:
             return redirect('admin_dashboard')
@@ -158,7 +160,7 @@ class CreateTaskView(LoginRequiredMixin, View):
         return redirect('task_list')
 
 class UpdateTaskView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def get(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
         user = request.user
@@ -212,7 +214,7 @@ class UpdateTaskView(LoginRequiredMixin, View):
         return redirect('task_list')
 
 class DeleteTaskView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
         user = request.user
@@ -229,7 +231,7 @@ class DeleteTaskView(LoginRequiredMixin, View):
         return redirect('task_list')
 
 class TaskReportAdminView(LoginRequiredMixin, View):
-    login_url = '/adminpanel/login/'
+    login_url = '/'
     def get(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
         if task.status != 'Completed':
