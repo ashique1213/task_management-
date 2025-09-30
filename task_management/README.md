@@ -63,7 +63,11 @@ Develop API endpoints and an Admin Panel utilizing Python and Django to enhance 
    - Install required packages: `pip install -r requirements.txt`.
 
 3. **Configure the Project**:
-   - Update `taskmanagement/settings.py` with a secure `SECRET_KEY`.
+   - Update `taskmanagement/settings.py` with 
+     SECRET_KEY = config("SECRET_KEY")
+     DEBUG = config("DEBUG", default=False, cast=bool)
+     ALLOWED_HOSTS = config("ALLOWED_HOSTS")
+
    - Ensure the database is set to SQLite (default in `settings.py`).
 
 4. **Apply Migrations**:
