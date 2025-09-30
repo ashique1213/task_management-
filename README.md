@@ -83,6 +83,108 @@
   - Obtain a token via `POST /api/token/` with username and password.
   - Use the token to access `GET /tasks`, `PUT /tasks/{id}`, and attempt `GET /tasks/{id}/report` (restricted).
 
+#### 1. User Authentication (Obtain JWT Token)
+- **Endpoint**: `http://127.0.0.1:8000/api/token/`
+- **Method**: `POST`
+- **Body** (raw JSON):
+  ```json
+  {
+      "username": "testuser",
+      "password": "password123"
+  }
+  ```
+- **Expected Response**:
+  ```json
+  {
+      "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...your_refresh_token",
+      "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...your_access_token"
+  }
+  ```
+  - Copy the `access` token for use in subsequent requests.
+
+#### 2. Test GET /tasks (Fetch All Tasks Assigned to the Logged-in User)
+- **Endpoint**: `http://127.0.0.1:8000/api/tasks/`
+- **Method**: `GET`
+- **Headers**: 
+  - Key: `Authorization`
+  - Value: `Bearer your_access_token` (replace with the token from step 1)
+
+  ```json
+  [
+      {
+          "id": 1,
+          "title": "Complete Report",
+          "description": "Finish the task report",
+          "assigned_to": 1,
+          "due_date": "2025-10-15",
+          "status": "Pending",
+          "completion_report": null,
+          "worked_hours": null
+      },
+      {
+          "id": 2,
+          "title": "Update Documentation",
+          "description": "Update project docs",
+          "assigned_to": 1,
+          "due_date": "2025-10-10",
+          "status": "In Progress",
+          "completion_report": null,
+          "worked_hours": null
+      }
+  ]
+  ```
+
+#### 3. Test PUT /tasks/{id} (Update Task Status, Including Marking as Completed)
+- **Endpoint**: `http://127.0.0.1:8000/api/tasks/1/` 
+- (replace `1` with the task ID, e.g., 1 for "Complete Report")
+- **Method**: `PUT`
+- **Headers**: 
+  - Key: `Authorization`
+  - Value: `Bearer your_access_token`
+- **Body** (raw JSON):
+  - To update status to "In Progress":
+    ```json
+    {
+        "status": "In Progress"
+    }
+    ```
+  - To mark as "Completed" (requires `completion_report` and `worked_hours`):
+    ```json
+    {
+        "status": "Completed",
+        "completion_report": "Task completed successfully, no major challenges faced.",
+        "worked_hours": 4.5
+    }
+    ```
+- **Expected Response** (after marking as Completed):
+  ```json
+  {
+      "id": 1,
+      "title": "Complete Report",
+      "description": "Finish the task report",
+      "assigned_to": 1,
+      "due_date": "2025-10-15",
+      "status": "Completed",
+      "completion_report": "Task completed successfully, no major challenges faced.",
+      "worked_hours": 4.5
+  }
+  ```
+  - If `completion_report` or `worked_hours` is missing when setting to "Completed", you’ll get a `400 Bad Request` error.
+
+#### 4. Test GET /tasks/{id}/report (Restricted Endpoint)
+- **Endpoint**: `http://127.0.0.1:8000/api/tasks/1/report/` (replace `1` with the task ID)
+- **Method**: `GET`
+- **Headers**: 
+  - Key: `Authorization`
+  - Value: `Bearer your_access_token`
+- **Expected Response**: 
+  - A `403 Forbidden` error, as this endpoint is restricted to Admins and SuperAdmins. Example:
+    ```json
+    {
+        "error": "Not authorized"
+    }
+    ```
+
 - **Admin Panel**:
   - Log in at `http://127.0.0.1:8000/` with SuperAdmin or Admin credentials.
   - SuperAdmins can manage users, admins, and tasks; Admins can manage tasks and view reports for their users.
