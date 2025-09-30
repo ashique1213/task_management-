@@ -22,9 +22,7 @@ class LoginView(View):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        print(user)
         if user is not None and user.role in ['admin', 'superadmin']:
-            print("k")
             login(request, user)
             logger.info(f"User {user.username} logged in to admin panel")
             return redirect('admin_dashboard')
